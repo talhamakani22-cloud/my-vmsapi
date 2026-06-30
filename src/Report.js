@@ -66,6 +66,13 @@ function Report({ onBackToDashboard, onRequireLogin }) {
     fetchVisitors();
   };
 
+  const handlePrintReport = async () => {
+    await fetchVisitors();
+    setTimeout(() => {
+      window.print();
+    }, 150);
+  };
+
   return (
     <div className="report-container">
       <div className="bg-shapes">
@@ -195,7 +202,7 @@ function Report({ onBackToDashboard, onRequireLogin }) {
         <button className="action-btn export-btn">
           📥 Export to CSV
         </button>
-        <button className="action-btn print-btn">
+        <button className="action-btn print-btn" onClick={handlePrintReport}>
           🖨️ Print Report
         </button>
         <button className="action-btn back-dashboard" onClick={onBackToDashboard}>
