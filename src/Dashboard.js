@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Dashboard.css';
+import { apiUrl } from './apiClient';
 
 function Dashboard({ onNavigateToReport, onLogout }) {
   const [visitors, setVisitors] = useState([]);
@@ -11,7 +12,7 @@ function Dashboard({ onNavigateToReport, onLogout }) {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch('/api/visitors');
+        const res = await fetch(apiUrl('/api/visitors'));
         const data = await res.json();
         if (data.success) {
           setVisitors(data.visitors);
