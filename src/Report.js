@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Report.css';
+import { apiUrl } from './apiClient';
 
 function Report({ onBackToDashboard, onRequireLogin }) {
   useEffect(() => {
@@ -25,7 +26,8 @@ function Report({ onBackToDashboard, onRequireLogin }) {
       if (searchQuery) params.append('search', searchQuery);
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
-      const res = await fetch(`/api/visitors?${params.toString()}`);
+      const query = params.toString();
+      const res = await fetch(apiUrl(`/api/visitors${query ? `?${query}` : ''}`));
       const data = await res.json();
       if (data.success) {
         setVisitors(data.visitors);
