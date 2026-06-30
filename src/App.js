@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import Dashboard from './Dashboard';
 import Report from './Report';
+import { apiUrl } from './apiClient';
 
 function App() {
   const [screen, setScreen] = useState('login');
@@ -11,7 +12,7 @@ function App() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await fetch('/api/auth/session', { credentials: 'include' });
+        const res = await fetch(apiUrl('/api/auth/session'), { credentials: 'include' });
         let data = {};
         try {
           data = await res.json();
@@ -38,7 +39,7 @@ function App() {
 
   const handleLogout = async () => {
     localStorage.removeItem('user');
-    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+    await fetch(apiUrl('/api/logout'), { method: 'POST', credentials: 'include' });
     setIsLoggedIn(false);
     setScreen('login');
   };
@@ -46,7 +47,7 @@ function App() {
   if (!isLoggedIn) {
     return <Login onSignInSuccess={async () => {
       // Check session after login
-      const res = await fetch('/api/auth/session', { credentials: 'include' });
+      const res = await fetch(apiUrl('/api/auth/session'), { credentials: 'include' });
       let data = {};
       try {
         data = await res.json();
@@ -74,7 +75,7 @@ function App() {
   }
 
   return <Login onSignInSuccess={async () => {
-    const res = await fetch('/api/auth/session', { credentials: 'include' });
+    const res = await fetch(apiUrl('/api/auth/session'), { credentials: 'include' });
     let data = {};
     try {
       data = await res.json();

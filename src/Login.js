@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './Login.css';
+import { apiUrl } from './apiClient';
 
 function Login({ onSignInSuccess }) {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -35,7 +36,7 @@ function Login({ onSignInSuccess }) {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
