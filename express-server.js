@@ -10,16 +10,19 @@ const app = express();
 const PORT = process.env.PORT || process.env.SERVER_PORT || 1001;
 const isProduction = process.env.NODE_ENV === 'production';
 
+const normalizeOrigin = (origin) => (origin || '').trim().replace(/\/$/, '');
+
 const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((origin) => normalizeOrigin(origin))
   .filter(Boolean);
 
 const corsOptions = {
   origin(origin, callback) {
+    const normalizedOrigin = normalizeOrigin(origin);
     if (!origin) return callback(null, true);
     if (!isProduction) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (allowedOrigins.includes(normalizedOrigin)) return callback(null, true);
     return callback(null, false);
   },
   credentials: true,
