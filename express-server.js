@@ -15,19 +15,23 @@ const allowedOrigins = (process.env.FRONTEND_URL || '')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-// Connect to DB once
-connectDB();
-
-// Middleware
-app.use(cors({
+const corsOptions = {
   origin(origin, callback) {
     if (!origin) return callback(null, true);
     if (!isProduction) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('CORS blocked: origin not allowed'));
+    return callback(null, false);
   },
   credentials: true,
-}));
+  optionsSuccessStatus: 204,
+};
+
+// Connect to DB once
+connectDB();
+
+// Middleware
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
