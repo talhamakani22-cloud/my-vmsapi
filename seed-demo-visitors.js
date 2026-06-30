@@ -24,7 +24,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'VIP visitor',
       purposeOfVisit: 'Business Meeting',
       remark: 'Executive visitor from USA'
@@ -43,7 +43,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'First time visitor',
       purposeOfVisit: 'Project Discussion',
       remark: 'Consultant from UK'
@@ -62,7 +62,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'First time visitor',
       purposeOfVisit: 'Client Meeting',
       remark: 'Partner visit'
@@ -81,7 +81,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'Returning visitor',
       purposeOfVisit: 'Training Session',
       remark: 'Regular guest'
@@ -100,7 +100,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'Frequent visitor',
       purposeOfVisit: 'Board Meeting',
       remark: 'Director'
@@ -119,7 +119,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'VIP guest',
       purposeOfVisit: 'Official Visit',
       remark: 'Government official'
@@ -138,7 +138,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'Business visitor',
       purposeOfVisit: 'Sales Presentation',
       remark: 'Sales partner'
@@ -157,7 +157,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'Special guest',
       purposeOfVisit: 'Strategic Planning',
       remark: 'CEO'
@@ -176,7 +176,7 @@ async function seedVisitors() {
       checkInTime: new Date(),
       checkOutTime: null,
       status: 'checked-in',
-      platform: 'expo',
+      platform: 'web',
       notes: 'New visitor',
       purposeOfVisit: 'Tech Demo',
       remark: 'Developer'

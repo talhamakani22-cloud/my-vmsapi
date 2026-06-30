@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 const { connectDB } = require('./config/database');
 
 const app = express();
@@ -24,10 +25,12 @@ app.use(session({
 
 // Routes
 const authRouter = require('./api/auth');
+const ocrRouter = require('./api/ocr');
 const visitorsRouter = require('./api/visitors');
 const sessionRouter = require('./api/session');
 app.use('/api/auth', authRouter);
 app.use('/api/auth', sessionRouter);
+app.use('/api/ocr', ocrRouter);
 app.use('/api/visitors', visitorsRouter);
 
 // Protected route

@@ -21,7 +21,7 @@ const loginRecordSchema = new mongoose.Schema({
   },
   platform: {
     type: String,
-    enum: ['web', 'ios', 'android', 'expo'],
+    enum: ['web', 'ios', 'android'],
     default: 'web'
   },
   status: {

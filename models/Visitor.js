@@ -70,8 +70,8 @@ const visitorSchema = new mongoose.Schema({
   },
   platform: {
     type: String,
-    enum: ['web', 'ios', 'android', 'expo'],
-    default: 'expo'
+    enum: ['web', 'ios', 'android'],
+    default: 'web'
   },
   notes: {
     type: String,
