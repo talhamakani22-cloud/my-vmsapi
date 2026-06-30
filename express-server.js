@@ -8,19 +8,41 @@ const { connectDB } = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || process.env.SERVER_PORT || 1001;
+const isProduction = process.env.NODE_ENV === 'production';
+
+const allowedOrigins = (process.env.FRONTEND_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Connect to DB once
 connectDB();
 
 // Middleware
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (!isProduction) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS blocked: origin not allowed'));
+  },
+  credentials: true,
+}));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+app.set('trust proxy', 1);
+
 app.use(session({
-  secret: 'your-secret-key',
+  secret: process.env.SESSION_SECRET || 'dev-session-secret-change-me',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
+  cookie: {
+    secure: isProduction,
+    httpOnly: true,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000,
+  }
 }));
 
 // Routes
@@ -48,7 +70,10 @@ app.post('/api/logout', (req, res) => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Logout failed.' });
     }
-    res.clearCookie('connect.sid'); // Default session cookie name
+    res.clearCookie('connect.sid', {
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+    }); // Default session cookie name
     res.json({ success: true, message: 'Logged out' });
   });
 });
