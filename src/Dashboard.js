@@ -83,17 +83,38 @@ function Dashboard({ onNavigateToReport, onLogout }) {
     })
     .slice(0, 5);
 
-  // Dummy weekly data (could be improved to real stats)
-  const weeklyData = [
-    { day: 'Mon', visitors: 0 },
-    { day: 'Tue', visitors: 0 },
-    { day: 'Wed', visitors: 0 },
-    { day: 'Thu', visitors: 0 },
-    { day: 'Fri', visitors: 0 },
-    { day: 'Sat', visitors: 0 },
-    { day: 'Sun', visitors: 0 },
-  ];
-  const maxVisitors = Math.max(...weeklyData.map(d => d.visitors), 1);
+  // Month-wise data from real records (last 6 months)
+  const monthlyData = (() => {
+    const months = Array.from({ length: 6 }, (_, index) => {
+      const date = new Date();
+      date.setDate(1);
+      date.setHours(0, 0, 0, 0);
+      date.setMonth(date.getMonth() - (5 - index));
+      return {
+        month: date.toLocaleDateString('en-US', { month: 'short' }),
+        key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
+        visitors: 0,
+      };
+    });
+
+    const monthIndexByKey = months.reduce((acc, item, index) => {
+      acc[item.key] = index;
+      return acc;
+    }, {});
+
+    visitors.forEach((visitor) => {
+      const eventDate = new Date(visitor.createdAt || visitor.checkInTime || visitor.issueDate || 0);
+      if (Number.isNaN(eventDate.getTime())) return;
+      const eventKey = `${eventDate.getFullYear()}-${String(eventDate.getMonth() + 1).padStart(2, '0')}`;
+      const index = monthIndexByKey[eventKey];
+      if (index !== undefined) {
+        months[index].visitors += 1;
+      }
+    });
+
+    return months.map(({ month, visitors }) => ({ month, visitors }));
+  })();
+  const maxVisitors = Math.max(...monthlyData.map(d => d.visitors), 1);
 
   return (
     <div className="dashboard-container">
@@ -144,11 +165,11 @@ function Dashboard({ onNavigateToReport, onLogout }) {
       <div className="dashboard-content">
         {/* Charts Row */}
         <div className="charts-row">
-          {/* Weekly Registrations Chart */}
+          {/* Monthly Registrations Chart */}
           <div className="chart-card">
-            <h3 className="chart-title">Weekly Registrations</h3>
+            <h3 className="chart-title">Monthly Registrations</h3>
             <div className="bar-chart">
-              {weeklyData.map((item, index) => (
+              {monthlyData.map((item, index) => (
                 <div className="bar-item" key={index}>
                   <div className="bar-container">
                     <div 
@@ -158,7 +179,7 @@ function Dashboard({ onNavigateToReport, onLogout }) {
                       <span className="bar-value">{item.visitors}</span>
                     </div>
                   </div>
-                  <span className="bar-label">{item.day}</span>
+                  <span className="bar-label">{item.month}</span>
                 </div>
               ))}
             </div>

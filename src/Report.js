@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import './Report.css';
 import { apiUrl } from './apiClient';
 
@@ -12,13 +12,14 @@ function Report({ onBackToDashboard, onRequireLogin }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
 
 
   const [visitors, setVisitors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const fetchVisitors = async () => {
+  const fetchVisitors = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -38,13 +39,19 @@ function Report({ onBackToDashboard, onRequireLogin }) {
       setError('Failed to fetch visitors');
     }
     setLoading(false);
-  };
+  }, [searchQuery, startDate, endDate]);
 
-  // Fetch all visitors on mount
+  // Initial load + auto-refresh every minute
   useEffect(() => {
     fetchVisitors();
-    // eslint-disable-next-line
-  }, []);
+    const refreshInterval = setInterval(() => {
+      fetchVisitors();
+    }, 60000);
+
+    return () => {
+      clearInterval(refreshInterval);
+    };
+  }, [fetchVisitors]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -61,10 +68,50 @@ function Report({ onBackToDashboard, onRequireLogin }) {
     setStartDate('');
     setEndDate('');
     setSearchQuery('');
+    setSelectedMonth('');
     setError('');
     // Fetch all visitors after clearing filters
     fetchVisitors();
   };
+
+  const monthlySummary = useMemo(() => {
+    const now = new Date();
+    const months = Array.from({ length: 6 }, (_, index) => {
+      const date = new Date(now.getFullYear(), now.getMonth() - (5 - index), 1);
+      return {
+        label: date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
+        total: 0,
+      };
+    });
+
+    const monthIndexByKey = months.reduce((acc, month, index) => {
+      acc[month.key] = index;
+      return acc;
+    }, {});
+
+    visitors.forEach((visitor) => {
+      const eventDate = new Date(visitor.createdAt || visitor.checkInTime || visitor.issueDate || 0);
+      if (Number.isNaN(eventDate.getTime())) return;
+      const key = `${eventDate.getFullYear()}-${String(eventDate.getMonth() + 1).padStart(2, '0')}`;
+      const index = monthIndexByKey[key];
+      if (index !== undefined) {
+        months[index].total += 1;
+      }
+    });
+
+    return months;
+  }, [visitors]);
+
+  const displayedVisitors = useMemo(() => {
+    if (!selectedMonth) return visitors;
+    return visitors.filter((visitor) => {
+      const eventDate = new Date(visitor.createdAt || visitor.checkInTime || visitor.issueDate || 0);
+      if (Number.isNaN(eventDate.getTime())) return false;
+      const key = `${eventDate.getFullYear()}-${String(eventDate.getMonth() + 1).padStart(2, '0')}`;
+      return key === selectedMonth;
+    });
+  }, [visitors, selectedMonth]);
 
   const handlePrintReport = async () => {
     await fetchVisitors();
@@ -116,6 +163,21 @@ function Report({ onBackToDashboard, onRequireLogin }) {
                 className="date-input"
               />
             </div>
+            <div className="date-picker-group">
+              <label>Report Month</label>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="date-input"
+              >
+                <option value="">All Months</option>
+                {monthlySummary.map((month) => (
+                  <option key={month.key} value={month.key}>
+                    {month.label} ({month.total})
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {/* Search Box */}
             <div className="search-group">
@@ -144,8 +206,14 @@ function Report({ onBackToDashboard, onRequireLogin }) {
           </div>
 
           <div className="results-count">
-            {loading ? 'Loading...' : `Showing ${visitors.length} records`}
+            {loading ? 'Loading...' : `Showing ${displayedVisitors.length} records`}
             {error && <span style={{ color: 'red', marginLeft: 10 }}>{error}</span>}
+          </div>
+
+          <div className="results-count" style={{ marginTop: 10 }}>
+            {selectedMonth
+              ? `Monthly view active: ${monthlySummary.find((month) => month.key === selectedMonth)?.label || selectedMonth}`
+              : 'Monthly view: All Months'}
           </div>
         </div>
 
@@ -167,8 +235,8 @@ function Report({ onBackToDashboard, onRequireLogin }) {
               </tr>
             </thead>
             <tbody>
-              {visitors.length > 0 ? (
-                visitors.map((visitor, index) => (
+              {displayedVisitors.length > 0 ? (
+                displayedVisitors.map((visitor, index) => (
                   <tr key={index}>
                     <td className="emirates-id-cell">{visitor.emiratesId}</td>
                     <td className="name-en-cell">{visitor.fullNameEnglish}</td>
@@ -189,7 +257,7 @@ function Report({ onBackToDashboard, onRequireLogin }) {
               ) : (
                 <tr>
                   <td colSpan="10" className="no-results">
-                    No records found matching your criteria
+                    No monthly records found matching your criteria
                   </td>
                 </tr>
               )}
