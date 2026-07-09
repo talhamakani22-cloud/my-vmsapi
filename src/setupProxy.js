@@ -1,6 +1,10 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const API_BASE_URL = (process.env.API_BASE_URL || 'https://my-vmsapi-9.onrender.com').replace(/\/$/, '');
+const API_BASE_URL = (
+  process.env.API_BASE_URL
+  || process.env.REACT_APP_API_BASE_URL
+  || 'http://localhost:1001'
+).replace(/\/$/, '');
 
 module.exports = function(app) {
   app.use(

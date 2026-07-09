@@ -19,12 +19,15 @@ router.post('/', upload.single('file'), async (req, res) => {
     }
 
     const language = (req.body?.language || 'eng').trim();
+    const isTable = String(req.body?.isTable || 'false').toLowerCase() === 'true' ? 'true' : 'false';
+    const isOverlayRequired = String(req.body?.isOverlayRequired ?? 'true').toLowerCase() === 'true' ? 'true' : 'false';
     // Engine 2 only supports Latin-based languages; Arabic requires Engine 1.
     const ocrEngine = language === 'ara' ? '1' : '2';
     const form = new FormData();
     form.append('apikey', apiKey);
     form.append('language', language);
-    form.append('isTable', 'false');
+    form.append('isTable', isTable);
+    form.append('isOverlayRequired', isOverlayRequired);
     form.append('OCREngine', ocrEngine);
     form.append(
       'file',

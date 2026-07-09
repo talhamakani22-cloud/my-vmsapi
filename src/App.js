@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import Dashboard from './Dashboard';
 import Report from './Report';
+import AddPrice from './AddPrice';
+import ViewPriceList from './ViewPriceList';
+import NiewPriceRule from './NiewPriceRule';
+import UploadInvoice from './UploadInvoice';
 import { apiUrl } from './apiClient';
 
 function App() {
@@ -65,6 +69,9 @@ function App() {
     return (
       <Dashboard
         onNavigateToReport={() => setScreen('report')}
+        onNavigateToViewPriceList={() => setScreen('viewPriceList')}
+        onNavigateToNiewPriceRule={() => setScreen('niewPriceRule')}
+        onNavigateToUploadInvoice={() => setScreen('uploadInvoice')}
         onLogout={handleLogout}
       />
     );
@@ -72,6 +79,22 @@ function App() {
 
   if (screen === 'report') {
     return <Report onBackToDashboard={() => setScreen('dashboard')} onRequireLogin={handleLogout} />;
+  }
+
+  if (screen === 'addPrice') {
+    return <AddPrice onBackToDashboard={() => setScreen('dashboard')} />;
+  }
+
+  if (screen === 'viewPriceList') {
+    return <ViewPriceList onBackToDashboard={() => setScreen('dashboard')} />;
+  }
+
+  if (screen === 'niewPriceRule') {
+    return <NiewPriceRule onBackToDashboard={() => setScreen('dashboard')} />;
+  }
+
+  if (screen === 'uploadInvoice') {
+    return <UploadInvoice onBackToDashboard={() => setScreen('dashboard')} />;
   }
 
   return <Login onSignInSuccess={async () => {

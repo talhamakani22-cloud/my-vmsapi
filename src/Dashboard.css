@@ -608,6 +608,37 @@
   box-shadow: 0 6px 28px rgba(108, 99, 255, 0.55);
 }
 
+.add-price-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 12, 41, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.add-price-modal-content {
+  width: min(99.6vw, 1280px);
+  max-height: 97vh;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+@media (orientation: portrait) {
+  .add-price-modal-overlay {
+    padding: 4px;
+  }
+
+  .add-price-modal-content {
+    width: 99.8vw;
+    max-height: 98.5vh;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;

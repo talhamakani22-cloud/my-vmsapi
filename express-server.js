@@ -48,11 +48,13 @@ app.use(session({
 // Routes
 const authRouter = require('./api/auth');
 const ocrRouter = require('./api/ocr');
+const uploadRouter = require('./routes/uploadRoutes');
 const visitorsRouter = require('./api/visitors');
 const sessionRouter = require('./api/session');
 app.use('/api/auth', authRouter);
 app.use('/api/auth', sessionRouter);
 app.use('/api/ocr', ocrRouter);
+app.use('/api/upload', uploadRouter);
 app.use('/api/visitors', visitorsRouter);
 
 // Protected route

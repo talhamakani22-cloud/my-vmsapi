@@ -1,0 +1,439 @@
+.add-price-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  background: #0f0c29;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  padding: 6px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.bg-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  animation: float 8s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, #6c63ff, #302b63);
+  top: -120px;
+  left: -120px;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, #a78bfa, #7c3aed);
+  bottom: -80px;
+  right: -80px;
+  animation-delay: -3s;
+}
+
+.shape-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #38bdf8, #0284c7);
+  top: 50%;
+  right: 15%;
+  animation-delay: -6s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.04); }
+}
+
+.add-price-shell {
+  width: min(98vw, 1140px);
+  max-width: 1140px;
+  height: min(97vh, 1140px);
+  max-height: 1140px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #e2ebe7;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  padding: 28px 30px;
+  position: relative;
+  z-index: 1;
+  overflow: auto;
+}
+
+.add-price-container.popup-mode {
+  min-height: auto;
+  background: transparent;
+  padding: 0;
+}
+
+.add-price-container.popup-mode .add-price-shell {
+  width: min(98vw, 1120px);
+  max-width: 1120px;
+  height: auto;
+  max-height: 96vh;
+  margin: 0;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 24px 26px 22px;
+}
+
+@media (orientation: portrait) {
+  .add-price-container.popup-mode .add-price-shell {
+    width: 99.5vw;
+    max-width: 99.5vw;
+    max-height: 98vh;
+    padding: 18px 14px;
+  }
+}
+
+.add-price-container.popup-mode .add-price-header-row {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.add-price-container.popup-mode .add-price-header-row h1 {
+  color: #6c63ff;
+  font-size: 36px;
+}
+
+.add-price-container.popup-mode .form-field label {
+  color: #000000;
+  font-size: 15px;
+}
+
+.add-price-container.popup-mode .form-field input,
+.add-price-container.popup-mode .form-field select,
+.add-price-container.popup-mode .file-control {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #000000;
+  min-height: 44px;
+  height: 44px;
+  font-size: 15px;
+}
+
+.add-price-container.popup-mode .form-field input:focus,
+.add-price-container.popup-mode .form-field select:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+.add-price-container.popup-mode .download-btn,
+.add-price-container.popup-mode .action-btn.primary-btn,
+.add-price-container.popup-mode .action-btn.back-dashboard {
+  background: linear-gradient(135deg, #6c63ff 0%, #a78bfa 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 20px rgba(108, 99, 255, 0.35);
+  font-size: 14px;
+  padding: 10px 16px;
+}
+
+.add-price-container.popup-mode .download-btn:hover,
+.add-price-container.popup-mode .action-btn.primary-btn:hover,
+.add-price-container.popup-mode .action-btn.back-dashboard:hover {
+  box-shadow: 0 6px 28px rgba(108, 99, 255, 0.48);
+}
+
+.add-price-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8e5;
+}
+
+.add-price-header-row h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 700;
+  color: #33b26f;
+}
+
+.add-price-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-grid.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 14px;
+  align-items: start;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.form-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #425569;
+}
+
+.form-field input,
+.form-field select {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #d7e0db;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #2f3f4d;
+  font-size: 14px;
+  min-height: 38px;
+  height: 38px;
+  padding: 6px 12px;
+  line-height: 1.2;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: #4caf82;
+  box-shadow: 0 0 0 3px rgba(76, 175, 130, 0.14);
+}
+
+.inline-label-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.download-btn {
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  background: #30b470;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(48, 180, 112, 0.25);
+  transition: all 0.25s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.93;
+}
+
+.file-field {
+  margin-top: 2px;
+}
+
+.file-control {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #d7e0db;
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+}
+
+.file-control input[type='file'] {
+  width: auto;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.file-control span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.upload-btn {
+  align-self: flex-start;
+  border: 1px solid #525f6f;
+  background: #ffffff;
+  color: #2f3f4d;
+  border-radius: 2px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.confirm-row {
+  margin-top: 4px;
+}
+
+.confirm-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.confirm-checkbox input[type='checkbox'] {
+  width: 14px;
+  height: 14px;
+  accent-color: #30b470;
+}
+
+.submit-row {
+  margin-top: 0;
+}
+
+.json-preview-section {
+  margin-top: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.json-preview-section h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.json-preview-section pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #111827;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.add-price-table-section {
+  margin-top: 18px;
+}
+
+.add-price-table-section h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: #000000;
+}
+
+.add-price-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.add-price-table {
+  width: 100%;
+  min-width: 1400px;
+  border-collapse: collapse;
+}
+
+.add-price-table thead {
+  background: #f8f9fa;
+}
+
+.add-price-table th {
+  text-align: left;
+  padding: 12px;
+  font-size: 12px;
+  color: #000000;
+  border-bottom: 1px solid #e2e8f0;
+  text-transform: uppercase;
+}
+
+.add-price-table td {
+  padding: 12px;
+  font-size: 13px;
+  color: #000000;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.add-price-table tbody tr:hover {
+  background: #f7fafc;
+}
+
+.add-price-no-results {
+  text-align: center;
+  padding: 24px;
+  color: #6b7280;
+}
+
+.action-btn {
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.action-btn.primary-btn {
+  background: #30b470;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(48, 180, 112, 0.25);
+}
+
+.action-btn.back-dashboard {
+  background: #eef2f4;
+  border: 1px solid #d3dde5;
+  color: #374151;
+  box-shadow: none;
+}
+
+.action-btn.back-dashboard:hover,
+.action-btn.primary-btn:hover {
+  opacity: 0.93;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .add-price-container {
+    padding: 10px;
+  }
+
+  .add-price-shell {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+    min-height: calc(100vh - 24px);
+    padding: 18px;
+  }
+
+  .form-grid.two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .add-price-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .action-btn.back-dashboard {
+    width: 100%;
+  }
+
+  .inline-label-row {
+    flex-wrap: wrap;
+  }
+}
