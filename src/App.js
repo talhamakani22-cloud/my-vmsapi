@@ -11,9 +11,29 @@ import ComplaintTrack from './ComplaintTrack';
 import QRCodeGenerator from './QRCodeGenerator';
 import { apiUrl } from './apiClient';
 
+const getPublicScreenFromUrl = () => {
+  const path = window.location.pathname.toLowerCase();
+  const queryScreen = new URLSearchParams(window.location.search).get('screen');
+
+  if (queryScreen === 'complaintForm' || queryScreen === 'complaintTrack') {
+    return queryScreen;
+  }
+
+  if (path === '/complaint' || path === '/complaint-form') {
+    return 'complaintForm';
+  }
+
+  if (path === '/complaint-track') {
+    return 'complaintTrack';
+  }
+
+  return null;
+};
+
 function App() {
-  const [screen, setScreen] = useState('login');
+  const [screen, setScreen] = useState(() => getPublicScreenFromUrl() || 'login');
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('user')));
+  const isPublicScreen = screen === 'complaintForm' || screen === 'complaintTrack';
 
   // Check session from backend only on mount
   useEffect(() => {
@@ -65,7 +85,7 @@ function App() {
     setScreen('login');
   };
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn && !isPublicScreen) {
     return <Login onSignInSuccess={(userData) => {
       localStorage.setItem('user', JSON.stringify(userData));
       setIsLoggedIn(true);

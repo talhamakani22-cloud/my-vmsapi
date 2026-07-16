@@ -11,7 +11,7 @@ function QRCodeGenerator() {
     const hostname = window.location.hostname;
     const port = window.location.port;
     const portStr = port ? `:${port}` : '';
-    const complaintUrl = `${protocol}//${hostname}${portStr}/complaint`;
+    const complaintUrl = `${protocol}//${hostname}${portStr}/?screen=complaintForm`;
     setQrUrl(complaintUrl);
     setLoading(false);
   }, []);
