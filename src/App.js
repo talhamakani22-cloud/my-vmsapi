@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Login from './Login';
 import Dashboard from './Dashboard';
 import Report from './Report';
@@ -10,6 +10,7 @@ import ComplaintForm from './ComplaintForm';
 import ComplaintTrack from './ComplaintTrack';
 import QRCodeGenerator from './QRCodeGenerator';
 import { apiUrl } from './apiClient';
+import './App.css';
 
 const getPublicScreenFromUrl = () => {
   const path = window.location.pathname.toLowerCase();
@@ -33,12 +34,37 @@ const getPublicScreenFromUrl = () => {
 function App() {
   const [screen, setScreen] = useState(() => getPublicScreenFromUrl() || 'login');
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('user')));
+  const screenHistoryRef = useRef([]);
   const isPublicScreen = screen === 'complaintForm' || screen === 'complaintTrack';
+
+  const navigateTo = (nextScreen) => {
+    setScreen((currentScreen) => {
+      if (currentScreen === nextScreen) {
+        return currentScreen;
+      }
+      screenHistoryRef.current.push(currentScreen);
+      return nextScreen;
+    });
+  };
+
+  const goBack = () => {
+    setScreen((currentScreen) => {
+      const previousScreen = screenHistoryRef.current.pop();
+      if (previousScreen) {
+        return previousScreen;
+      }
+      if (currentScreen === 'complaintTrack') {
+        return 'complaintForm';
+      }
+      return isLoggedIn ? 'dashboard' : 'login';
+    });
+  };
 
   // Check session from backend only on mount
   useEffect(() => {
     const requestedPublicScreen = getPublicScreenFromUrl();
     if (requestedPublicScreen) {
+      screenHistoryRef.current = [];
       setScreen(requestedPublicScreen);
       return;
     }
@@ -47,6 +73,7 @@ function App() {
       const savedUser = localStorage.getItem('user');
       if (savedUser) {
         setIsLoggedIn(true);
+        screenHistoryRef.current = [];
         setScreen('dashboard');
       }
 
@@ -65,17 +92,20 @@ function App() {
 
         if (data.loggedIn) {
           setIsLoggedIn(true);
+          screenHistoryRef.current = [];
           setScreen('dashboard');
           return;
         }
 
         if (!savedUser) {
           setIsLoggedIn(false);
+          screenHistoryRef.current = [];
           setScreen('login');
         }
       } catch {
         if (!savedUser) {
           setIsLoggedIn(false);
+          screenHistoryRef.current = [];
           setScreen('login');
         }
       }
@@ -88,6 +118,7 @@ function App() {
     localStorage.removeItem('user');
     await fetch(apiUrl('/api/logout'), { method: 'POST', credentials: 'include' });
     setIsLoggedIn(false);
+    screenHistoryRef.current = [];
     setScreen('login');
   };
 
@@ -95,61 +126,52 @@ function App() {
     return <Login onSignInSuccess={(userData) => {
       localStorage.setItem('user', JSON.stringify(userData));
       setIsLoggedIn(true);
+      screenHistoryRef.current = [];
       setScreen('dashboard');
     }} />;
   }
 
+  let content = null;
+
   if (screen === 'dashboard') {
-    return (
+    content = (
       <Dashboard
-        onNavigateToReport={() => setScreen('report')}
-        onNavigateToViewPriceList={() => setScreen('viewPriceList')}
-        onNavigateToNiewPriceRule={() => setScreen('niewPriceRule')}
-        onNavigateToUploadInvoice={() => setScreen('uploadInvoice')}
-        onNavigateToComplaintTrack={() => setScreen('complaintTrack')}
-        onNavigateToQRCode={() => setScreen('qrCode')}
+        onNavigateToReport={() => navigateTo('report')}
+        onNavigateToComplaintTrack={() => navigateTo('complaintTrack')}
+        onNavigateToQRCode={() => navigateTo('qrCode')}
         onLogout={handleLogout}
       />
     );
+  } else if (screen === 'report') {
+    content = <Report onBackToDashboard={goBack} onRequireLogin={handleLogout} />;
+  } else if (screen === 'addPrice') {
+    content = <AddPrice onBackToDashboard={goBack} />;
+  } else if (screen === 'viewPriceList') {
+    content = <ViewPriceList onBackToDashboard={goBack} />;
+  } else if (screen === 'niewPriceRule') {
+    content = <NiewPriceRule onBackToDashboard={goBack} />;
+  } else if (screen === 'uploadInvoice') {
+    content = <UploadInvoice onBackToDashboard={goBack} />;
+  } else if (screen === 'complaintForm') {
+    content = <ComplaintForm onBackToDashboard={goBack} />;
+  } else if (screen === 'complaintTrack') {
+    content = <ComplaintTrack onBackToDashboard={goBack} />;
+  } else if (screen === 'qrCode') {
+    content = <QRCodeGenerator onBackToDashboard={goBack} />;
+  } else {
+    content = <Login onSignInSuccess={(userData) => {
+      localStorage.setItem('user', JSON.stringify(userData));
+      setIsLoggedIn(true);
+      screenHistoryRef.current = [];
+      setScreen('dashboard');
+    }} />;
   }
 
-  if (screen === 'report') {
-    return <Report onBackToDashboard={() => setScreen('dashboard')} onRequireLogin={handleLogout} />;
-  }
-
-  if (screen === 'addPrice') {
-    return <AddPrice onBackToDashboard={() => setScreen('dashboard')} />;
-  }
-
-  if (screen === 'viewPriceList') {
-    return <ViewPriceList onBackToDashboard={() => setScreen('dashboard')} />;
-  }
-
-  if (screen === 'niewPriceRule') {
-    return <NiewPriceRule onBackToDashboard={() => setScreen('dashboard')} />;
-  }
-
-  if (screen === 'uploadInvoice') {
-    return <UploadInvoice onBackToDashboard={() => setScreen('dashboard')} />;
-  }
-
-  if (screen === 'complaintForm') {
-    return <ComplaintForm />;
-  }
-
-  if (screen === 'complaintTrack') {
-    return <ComplaintTrack />;
-  }
-
-  if (screen === 'qrCode') {
-    return <QRCodeGenerator />;
-  }
-
-  return <Login onSignInSuccess={(userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setIsLoggedIn(true);
-    setScreen('dashboard');
-  }} />;
+  return (
+    <div className="app-shell">
+      {content}
+    </div>
+  );
 }
 
 export default App;

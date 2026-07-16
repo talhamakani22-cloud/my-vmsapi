@@ -40,6 +40,7 @@ connectDB();
 app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use('/assets/images', express.static(path.join(__dirname, 'assets', 'images')));
 
 app.set('trust proxy', 1);
 

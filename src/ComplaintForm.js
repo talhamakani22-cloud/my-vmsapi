@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import './Report.css';
 import { apiUrl } from './apiClient';
 
-function ComplaintForm() {
+function ComplaintForm({ onBackToDashboard }) {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -137,6 +137,11 @@ function ComplaintForm() {
     <div className="report-container">
       <div className="report-header">
         <div className="report-title">
+          {onBackToDashboard && (
+            <button className="back-btn" onClick={onBackToDashboard}>
+              ←
+            </button>
+          )}
           <div>
             <h1>Submit a Complaint</h1>
             <p className="subtitle">This form can be opened from a QR code without launching the app.</p>

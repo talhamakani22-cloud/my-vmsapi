@@ -19,6 +19,15 @@ const upload = multer({
   },
 });
 
+const ALLOWED_STATUSES = new Set([
+  'registered',
+  'assigned',
+  'in progress',
+  'pending',
+  'resolved',
+  'closed',
+]);
+
 async function ensureStorage() {
   await fs.mkdir(path.dirname(dataFilePath), { recursive: true });
   await fs.mkdir(uploadsDir, { recursive: true });
@@ -117,6 +126,45 @@ router.post('/', upload.single('file'), async (req, res) => {
       return res.status(400).json({ success: false, message: error.message });
     }
     return res.status(500).json({ success: false, message: 'Unable to submit complaint right now.' });
+  }
+});
+
+router.patch('/:ticket', async (req, res) => {
+  try {
+    const complaints = await readComplaints();
+    const ticketParam = String(req.params.ticket || '').trim().toUpperCase();
+    const index = complaints.findIndex((item) => String(item.ticket || '').toUpperCase() === ticketParam);
+
+    if (index < 0) {
+      return res.status(404).json({ success: false, message: 'Complaint not found.' });
+    }
+
+    const { status, assignedTo, followUpNote } = req.body || {};
+    const complaint = complaints[index];
+
+    if (typeof status === 'string' && status.trim()) {
+      const normalizedStatus = status.trim().toLowerCase();
+      if (!ALLOWED_STATUSES.has(normalizedStatus)) {
+        return res.status(400).json({ success: false, message: 'Invalid complaint status.' });
+      }
+      complaint.status = normalizedStatus;
+    }
+
+    if (typeof assignedTo === 'string') {
+      complaint.assignedTo = assignedTo.trim();
+    }
+
+    if (typeof followUpNote === 'string') {
+      complaint.followUpNote = followUpNote.trim();
+    }
+
+    complaint.updatedAt = new Date().toISOString();
+    complaints[index] = complaint;
+    await writeComplaints(complaints);
+
+    return res.json({ success: true, complaint });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Failed to update complaint.' });
   }
 });
 

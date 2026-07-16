@@ -23,13 +23,15 @@ const formatDateTime = (value) => {
   return date.toLocaleString();
 };
 
-function ComplaintTrack() {
+function ComplaintTrack({ onBackToDashboard }) {
   const [complaints, setComplaints] = useState([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [expandedTicket, setExpandedTicket] = useState('');
+  const [draftUpdates, setDraftUpdates] = useState({});
+  const [savingTicket, setSavingTicket] = useState('');
 
   const loadComplaints = async () => {
     setLoading(true);
@@ -53,6 +55,56 @@ function ComplaintTrack() {
     loadComplaints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const setDraftField = (ticket, field, value) => {
+    setDraftUpdates((prev) => ({
+      ...prev,
+      [ticket]: {
+        ...(prev[ticket] || {}),
+        [field]: value,
+      },
+    }));
+  };
+
+  const getDraftValue = (record, field, fallback = '') => {
+    const ticket = record.ticket || '';
+    if (!ticket) return fallback;
+    if (Object.prototype.hasOwnProperty.call(draftUpdates[ticket] || {}, field)) {
+      return draftUpdates[ticket][field];
+    }
+    return record[field] || fallback;
+  };
+
+  const saveComplaintUpdate = async (record) => {
+    const ticket = record.ticket;
+    if (!ticket) return;
+
+    const payload = {
+      status: getDraftValue(record, 'status', 'registered'),
+      assignedTo: getDraftValue(record, 'assignedTo', ''),
+    };
+
+    setSavingTicket(ticket);
+    setError('');
+    try {
+      const response = await fetch(apiUrl(`/api/complaints/${encodeURIComponent(ticket)}`), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!data.success) {
+        setError(data.message || 'Unable to update complaint.');
+        return;
+      }
+
+      setComplaints((prev) => prev.map((item) => (item.ticket === ticket ? data.complaint : item)));
+    } catch (err) {
+      setError('Unable to update complaint right now.');
+    } finally {
+      setSavingTicket('');
+    }
+  };
 
   const filteredComplaints = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -82,6 +134,11 @@ function ComplaintTrack() {
     <div className="report-container">
       <div className="report-header">
         <div className="report-title">
+          {onBackToDashboard && (
+            <button className="back-btn" onClick={onBackToDashboard}>
+              ←
+            </button>
+          )}
           <div>
             <h1>Track Complaint</h1>
             <p className="subtitle">View submitted complaints in a report-style table.</p>
@@ -171,6 +228,56 @@ function ComplaintTrack() {
                         <p><strong>Email:</strong> {record.email || '-'}</p>
                         <p><strong>Flat:</strong> {record.flatNo || '-'}</p>
                         <p><strong>Submitted:</strong> {formatDateTime(record.createdAt)}</p>
+
+                        {record.imagePath ? (
+                          <div className="complaint-track-image-wrap">
+                            <p><strong>Uploaded Picture:</strong></p>
+                            <img
+                              className="complaint-track-image"
+                              src={apiUrl(record.imagePath)}
+                              alt={`Complaint ${record.ticket} attachment`}
+                            />
+                          </div>
+                        ) : (
+                          <p><strong>Uploaded Picture:</strong> -</p>
+                        )}
+
+                        <div className="complaint-track-edit-grid">
+                          <div className="complaint-track-edit-field">
+                            <label>Status</label>
+                            <select
+                              className="filter-select complaint-inline-select"
+                              value={getDraftValue(record, 'status', 'registered')}
+                              onChange={(e) => setDraftField(record.ticket, 'status', e.target.value)}
+                            >
+                              <option value="registered">Registered</option>
+                              <option value="assigned">Assigned</option>
+                              <option value="in progress">In Progress</option>
+                              <option value="pending">Pending</option>
+                              <option value="resolved">Resolved</option>
+                              <option value="closed">Closed</option>
+                            </select>
+                          </div>
+
+                          <div className="complaint-track-edit-field">
+                            <label>Assigned To</label>
+                            <input
+                              className="date-input complaint-inline-input"
+                              value={getDraftValue(record, 'assignedTo', '')}
+                              onChange={(e) => setDraftField(record.ticket, 'assignedTo', e.target.value)}
+                              placeholder="e.g. John / Security Team"
+                            />
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="refresh-btn complaint-save-btn"
+                          onClick={() => saveComplaintUpdate(record)}
+                          disabled={savingTicket === record.ticket}
+                        >
+                          {savingTicket === record.ticket ? 'Saving...' : 'Save Changes'}
+                        </button>
                       </div>
                     )}
                   </article>

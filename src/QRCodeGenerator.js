@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './Report.css';
 
-function QRCodeGenerator() {
+function QRCodeGenerator({ onBackToDashboard }) {
   const [qrUrl, setQrUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -39,6 +39,11 @@ function QRCodeGenerator() {
     <div className="report-container">
       <div className="report-header">
         <div className="report-title">
+          {onBackToDashboard && (
+            <button className="back-btn" onClick={onBackToDashboard}>
+              ←
+            </button>
+          )}
           <div>
             <h1>📱 Complaint Registration QR Code</h1>
             <p className="subtitle">Scan this QR code to register a complaint without opening the app</p>

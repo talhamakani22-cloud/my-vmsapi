@@ -4,9 +4,6 @@ import { apiUrl } from './apiClient';
 
 function Dashboard({
   onNavigateToReport,
-  onNavigateToViewPriceList,
-  onNavigateToNiewPriceRule,
-  onNavigateToUploadInvoice,
   onNavigateToComplaintTrack,
   onNavigateToQRCode,
   onLogout,
@@ -270,15 +267,6 @@ function Dashboard({
       <div className="dashboard-actions">
         <button className="action-btn primary" onClick={onNavigateToReport}>
           View Reports
-        </button>
-        <button className="action-btn primary" onClick={onNavigateToViewPriceList}>
-          View Price List
-        </button>
-        <button className="action-btn primary" onClick={onNavigateToNiewPriceRule}>
-          View Price Rule
-        </button>
-        <button className="action-btn primary" onClick={onNavigateToUploadInvoice}>
-          Upload Invoice
         </button>
         <button className="action-btn primary" onClick={onNavigateToComplaintTrack}>
           Track Complaint
