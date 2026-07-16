@@ -7,11 +7,14 @@ function Dashboard({
   onNavigateToViewPriceList,
   onNavigateToNiewPriceRule,
   onNavigateToUploadInvoice,
+  onNavigateToComplaintRegistration,
+  onNavigateToComplaintTracking,
   onLogout,
 }) {
   const [visitors, setVisitors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showQrModal, setShowQrModal] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -278,9 +281,27 @@ function Dashboard({
         <button className="action-btn primary" onClick={onNavigateToUploadInvoice}>
           Upload Invoice
         </button>
+        <button className="action-btn primary" onClick={() => setShowQrModal(true)}>
+          Complaint QR
+        </button>
+        <button className="action-btn primary" onClick={onNavigateToComplaintTracking}>
+          Complaint Tracking
+        </button>
         {loading && <div style={{marginTop: 10}}>Loading...</div>}
         {error && <div style={{color: 'red', marginTop: 10}}>{error}</div>}
       </div>
+      {showQrModal && (
+        <div className="qr-overlay">
+          <div className="qr-modal">
+            <h3>Scan to Register a Complaint</h3>
+            <p>Open the camera on your phone and scan this QR code to submit a complaint without login.</p>
+            <img alt="Complaint QR" src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(window.location.origin + '/complaint.html')}`} />
+            <div style={{ marginTop: 12 }}>
+              <button className="action-btn secondary" onClick={() => setShowQrModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
