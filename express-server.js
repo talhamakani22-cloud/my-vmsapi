@@ -10,24 +10,34 @@ const app = express();
 const PORT = process.env.PORT || process.env.SERVER_PORT || 1001;
 const isProduction = process.env.NODE_ENV === 'production';
 
+const normalizeOrigin = (origin) => (origin || '').trim().replace(/\/$/, '');
+
 const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((origin) => normalizeOrigin(origin))
   .filter(Boolean);
+
+const corsOptions = {
+  origin(origin, callback) {
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (!origin) return callback(null, true);
+    if (!isProduction) return callback(null, true);
+    if (allowedOrigins.includes(normalizedOrigin)) return callback(null, true);
+    if (normalizedOrigin.startsWith('http://localhost') || normalizedOrigin.startsWith('http://127.0.0.1')) {
+      return callback(null, true);
+    }
+    console.warn(`[CORS BLOCKED] origin not allowed: ${origin}`);
+    return callback(new Error('CORS blocked: origin not allowed'));
+  },
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
 
 // Connect to DB once
 connectDB();
 
 // Middleware
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (!isProduction) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('CORS blocked: origin not allowed'));
-  },
-  credentials: true,
-}));
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
