@@ -53,8 +53,9 @@ function Login({ onSignInSuccess }) {
         return;
       }
       if (response.ok && data.success) {
-        localStorage.setItem('user', JSON.stringify({ email: form.email }));
-        onSignInSuccess();
+        const userData = { email: form.email };
+        localStorage.setItem('user', JSON.stringify(userData));
+        onSignInSuccess(userData);
       } else {
         setError(data.message || 'Invalid email or password.');
       }

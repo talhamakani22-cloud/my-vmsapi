@@ -7,6 +7,15 @@ const API_BASE_URL = (
 ).replace(/\/$/, '');
 
 module.exports = function(app) {
+  // Keep upload route pinned to local backend where /api/upload is implemented.
+  app.use(
+    '/api/upload',
+    createProxyMiddleware({
+      target: 'http://localhost:1001',
+      changeOrigin: true,
+    })
+  );
+
   app.use(
     '/api',
     createProxyMiddleware({

@@ -10,31 +10,45 @@ import { apiUrl } from './apiClient';
 
 function App() {
   const [screen, setScreen] = useState('login');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('user')));
 
   // Check session from backend only on mount
   useEffect(() => {
     const checkSession = async () => {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        setIsLoggedIn(true);
+        setScreen('dashboard');
+      }
+
       try {
         const res = await fetch(apiUrl('/api/auth/session'), { credentials: 'include' });
         let data = {};
         try {
           data = await res.json();
         } catch {
-          setIsLoggedIn(false);
-          setScreen('login');
+          if (!savedUser) {
+            setIsLoggedIn(false);
+            setScreen('login');
+          }
           return;
         }
-        setIsLoggedIn(data.loggedIn);
-        if (data.loggedIn && screen === 'login') {
+
+        if (data.loggedIn) {
+          setIsLoggedIn(true);
           setScreen('dashboard');
+          return;
         }
-        if (!data.loggedIn && screen !== 'login') {
+
+        if (!savedUser) {
+          setIsLoggedIn(false);
           setScreen('login');
         }
       } catch {
-        setIsLoggedIn(false);
-        setScreen('login');
+        if (!savedUser) {
+          setIsLoggedIn(false);
+          setScreen('login');
+        }
       }
     };
     checkSession();
@@ -49,18 +63,9 @@ function App() {
   };
 
   if (!isLoggedIn) {
-    return <Login onSignInSuccess={async () => {
-      // Check session after login
-      const res = await fetch(apiUrl('/api/auth/session'), { credentials: 'include' });
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {
-        setIsLoggedIn(false);
-        setScreen('login');
-        return;
-      }
-      setIsLoggedIn(data.loggedIn);
+    return <Login onSignInSuccess={(userData) => {
+      localStorage.setItem('user', JSON.stringify(userData));
+      setIsLoggedIn(true);
       setScreen('dashboard');
     }} />;
   }
@@ -97,17 +102,9 @@ function App() {
     return <UploadInvoice onBackToDashboard={() => setScreen('dashboard')} />;
   }
 
-  return <Login onSignInSuccess={async () => {
-    const res = await fetch(apiUrl('/api/auth/session'), { credentials: 'include' });
-    let data = {};
-    try {
-      data = await res.json();
-    } catch {
-      setIsLoggedIn(false);
-      setScreen('login');
-      return;
-    }
-    setIsLoggedIn(data.loggedIn);
+  return <Login onSignInSuccess={(userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setIsLoggedIn(true);
     setScreen('dashboard');
   }} />;
 }
