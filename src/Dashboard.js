@@ -7,7 +7,6 @@ function Dashboard({
   onNavigateToViewPriceList,
   onNavigateToNiewPriceRule,
   onNavigateToUploadInvoice,
-  onNavigateToComplaintForm,
   onNavigateToComplaintTrack,
   onNavigateToQRCode,
   onLogout,
@@ -280,9 +279,6 @@ function Dashboard({
         </button>
         <button className="action-btn primary" onClick={onNavigateToUploadInvoice}>
           Upload Invoice
-        </button>
-        <button className="action-btn primary" onClick={onNavigateToComplaintForm}>
-          Register Complaint
         </button>
         <button className="action-btn primary" onClick={onNavigateToComplaintTrack}>
           Track Complaint

@@ -363,6 +363,84 @@
   margin-bottom: 24px;
 }
 
+.complaint-form-layout {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.complaint-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.complaint-details-group {
+  margin-top: 12px;
+}
+
+.complaint-upload-group {
+  grid-column: 1 / -1;
+}
+
+.complaint-upload-note {
+  margin-top: 4px;
+  color: #4b5563;
+  font-size: 12px;
+}
+
+.complaint-input {
+  width: 100%;
+  min-width: 0;
+  cursor: text;
+}
+
+.complaint-textarea {
+  resize: vertical;
+}
+
+.complaint-track-layout {
+  max-width: 720px;
+  margin: 0 auto;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.complaint-track-header h3 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.complaint-track-header p {
+  margin: 6px 0 0;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.complaint-track-row {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.complaint-track-result {
+  margin-top: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  color: #111827;
+}
+
+.complaint-track-details {
+  line-height: 1.5;
+}
+
 .filter-row {
   display: flex;
   gap: 16px;
@@ -552,6 +630,169 @@
   background: #f7fafc;
 }
 
+.complaint-track-table {
+  min-width: 980px;
+  table-layout: fixed;
+}
+
+.complaint-track-table th,
+.complaint-track-table td {
+  box-sizing: border-box;
+  vertical-align: top;
+  text-align: left;
+}
+
+.complaint-track-table th:nth-child(1),
+.complaint-track-table td:nth-child(1) {
+  width: 130px;
+  white-space: nowrap;
+}
+
+.complaint-track-table th:nth-child(2),
+.complaint-track-table td:nth-child(2) {
+  width: 110px;
+}
+
+.complaint-track-table th:nth-child(4),
+.complaint-track-table td:nth-child(4),
+.complaint-track-table th:nth-child(7),
+.complaint-track-table td:nth-child(7) {
+  word-break: break-word;
+}
+
+.complaint-track-table th:nth-child(6),
+.complaint-track-table td:nth-child(6) {
+  width: 180px;
+  white-space: nowrap;
+}
+
+.complaint-track-table td.no-results {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.complaint-track-toolbar {
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 180px 110px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.complaint-status-filter,
+.complaint-refresh-btn {
+  height: 42px;
+}
+
+.complaint-track-cards-shell {
+  max-width: 100%;
+  margin-top: 6px;
+  background: #eef2f6;
+  border: 1px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.complaint-track-cards {
+  display: grid;
+  gap: 10px;
+}
+
+.complaint-track-card {
+  background: #5d6c7b;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f8fbff;
+}
+
+.complaint-track-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.complaint-track-card-head h3 {
+  margin: 0;
+  color: #0b1118;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.complaint-track-status-pill {
+  background: #b9e4fb;
+  color: #103b54;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.complaint-track-meta {
+  margin: 8px 0 6px;
+  color: #deecf8;
+  font-size: 12px;
+}
+
+.complaint-track-meta strong {
+  color: #f7fcff;
+}
+
+.complaint-track-desc {
+  margin: 0 0 8px;
+  color: #f8fbff;
+  font-size: 15px;
+}
+
+.complaint-track-progress-wrap {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(139, 185, 214, 0.45);
+  overflow: hidden;
+}
+
+.complaint-track-progress-bar {
+  height: 100%;
+  background: #71c7f6;
+  transition: width 0.3s ease;
+}
+
+.complaint-track-progress-text {
+  margin: 6px 0 4px;
+  font-size: 12px;
+  color: #cae6f9;
+}
+
+.complaint-track-note {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #e6f2fb;
+}
+
+.complaint-details-btn {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.complaint-track-expanded {
+  margin-top: 10px;
+  border-top: 1px solid rgba(216, 232, 245, 0.35);
+  padding-top: 8px;
+}
+
+.complaint-track-expanded p {
+  margin: 5px 0;
+  font-size: 13px;
+  color: #f4f8fc;
+}
+
 .emirates-id-cell {
   font-family: 'Courier New', monospace;
   font-weight: 600;
@@ -665,6 +906,22 @@
   .filter-row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .complaint-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .complaint-track-row {
+    grid-template-columns: 1fr;
+  }
+
+  .complaint-track-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .complaint-track-card-head h3 {
+    font-size: 21px;
   }
 
   .date-picker-group,

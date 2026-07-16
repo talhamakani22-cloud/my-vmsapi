@@ -106,7 +106,6 @@ function App() {
         onNavigateToViewPriceList={() => setScreen('viewPriceList')}
         onNavigateToNiewPriceRule={() => setScreen('niewPriceRule')}
         onNavigateToUploadInvoice={() => setScreen('uploadInvoice')}
-        onNavigateToComplaintForm={() => setScreen('complaintForm')}
         onNavigateToComplaintTrack={() => setScreen('complaintTrack')}
         onNavigateToQRCode={() => setScreen('qrCode')}
         onLogout={handleLogout}
