@@ -120,6 +120,13 @@
   color: rgba(200, 200, 230, 0.6);
 }
 
+.powered-by {
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: rgba(167, 177, 255, 0.95);
+  text-align: center;
+}
+
 /* ── Form ── */
 .login-form {
   display: flex;

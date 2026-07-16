@@ -163,6 +163,7 @@ function Login({ onSignInSuccess }) {
           </button>
 
           {error && <p className="auth-error">{error}</p>}
+          <p className="powered-by">Powered by Fastym Technologies</p>
         </form>
       </div>
     </div>
