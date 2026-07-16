@@ -61,11 +61,13 @@ const ocrRouter = require('./api/ocr');
 const uploadRouter = require('./routes/uploadRoutes');
 const visitorsRouter = require('./api/visitors');
 const sessionRouter = require('./api/session');
+const complaintsRouter = require('./api/complaints');
 app.use('/api/auth', authRouter);
 app.use('/api/auth', sessionRouter);
 app.use('/api/ocr', ocrRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/visitors', visitorsRouter);
+app.use('/api/complaints', complaintsRouter);
 
 // Protected route
 
