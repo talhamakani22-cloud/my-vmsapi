@@ -2,10 +2,10 @@ const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
 const multer = require('multer');
+const Complaint = require('../models/Complaint');
 
 const router = express.Router();
 
-const dataFilePath = path.join(__dirname, '..', 'data', 'complaints.json');
 const uploadsDir = path.join(__dirname, '..', 'assets', 'images', 'complaints');
 
 const upload = multer({
@@ -29,48 +29,27 @@ const ALLOWED_STATUSES = new Set([
 ]);
 
 async function ensureStorage() {
-  await fs.mkdir(path.dirname(dataFilePath), { recursive: true });
   await fs.mkdir(uploadsDir, { recursive: true });
-
-  try {
-    await fs.access(dataFilePath);
-  } catch {
-    await fs.writeFile(dataFilePath, '[]', 'utf8');
-  }
 }
 
-async function readComplaints() {
-  await ensureStorage();
-  const raw = await fs.readFile(dataFilePath, 'utf8');
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-async function writeComplaints(complaints) {
-  await fs.writeFile(dataFilePath, JSON.stringify(complaints, null, 2), 'utf8');
-}
-
-function buildTicketNumber(existingComplaints) {
+async function buildTicketNumber() {
   const now = new Date();
   const y = now.getFullYear();
   const m = String(now.getMonth() + 1).padStart(2, '0');
   const d = String(now.getDate()).padStart(2, '0');
   const datePart = `${y}${m}${d}`;
 
-  const todayCount = existingComplaints.filter((item) => String(item.ticket || '').includes(`CMP-${datePart}-`)).length;
+  const todayCount = await Complaint.countDocuments({
+    ticket: { $regex: `^CMP-${datePart}-` },
+  });
+
   const sequence = String(todayCount + 1).padStart(4, '0');
   return `CMP-${datePart}-${sequence}`;
 }
 
 router.get('/', async (req, res) => {
   try {
-    const complaints = await readComplaints();
-    complaints.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    const complaints = await Complaint.find({}).sort({ createdAt: -1 }).lean();
     return res.json({ success: true, complaints });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Failed to load complaints.' });
@@ -79,14 +58,14 @@ router.get('/', async (req, res) => {
 
 router.post('/', upload.single('file'), async (req, res) => {
   try {
-    const complaints = await readComplaints();
+    await ensureStorage();
     const { name = '', email = '', phone = '', location = '', details = '' } = req.body || {};
 
     if (!name.trim() || !email.trim() || !location.trim() || !details.trim()) {
       return res.status(400).json({ success: false, message: 'Name, email, location, and details are required.' });
     }
 
-    const ticket = buildTicketNumber(complaints);
+    const ticket = await buildTicketNumber();
     let imagePath = '';
 
     if (req.file && req.file.buffer) {
@@ -98,7 +77,7 @@ router.post('/', upload.single('file'), async (req, res) => {
       imagePath = `/assets/images/complaints/${filename}`;
     }
 
-    const complaint = {
+    const complaint = await Complaint.create({
       ticket,
       name: name.trim(),
       email: email.trim(),
@@ -109,19 +88,18 @@ router.post('/', upload.single('file'), async (req, res) => {
       followUpNote: 'Complaint registered',
       assignedTo: '',
       imagePath,
-      createdAt: new Date().toISOString(),
-    };
-
-    complaints.unshift(complaint);
-    await writeComplaints(complaints);
+    });
 
     return res.status(201).json({
       success: true,
       ticket,
-      complaint,
+      complaint: complaint.toObject(),
       message: 'Complaint submitted successfully.',
     });
   } catch (error) {
+    if (error && error.code === 11000) {
+      return res.status(409).json({ success: false, message: 'Duplicate complaint ticket detected. Please try again.' });
+    }
     if (error && error.message && error.message.includes('Only JPG and PNG')) {
       return res.status(400).json({ success: false, message: error.message });
     }
@@ -131,16 +109,13 @@ router.post('/', upload.single('file'), async (req, res) => {
 
 router.patch('/:ticket', async (req, res) => {
   try {
-    const complaints = await readComplaints();
     const ticketParam = String(req.params.ticket || '').trim().toUpperCase();
-    const index = complaints.findIndex((item) => String(item.ticket || '').toUpperCase() === ticketParam);
-
-    if (index < 0) {
+    const complaint = await Complaint.findOne({ ticket: ticketParam });
+    if (!complaint) {
       return res.status(404).json({ success: false, message: 'Complaint not found.' });
     }
 
     const { status, assignedTo, followUpNote } = req.body || {};
-    const complaint = complaints[index];
 
     if (typeof status === 'string' && status.trim()) {
       const normalizedStatus = status.trim().toLowerCase();
@@ -158,11 +133,9 @@ router.patch('/:ticket', async (req, res) => {
       complaint.followUpNote = followUpNote.trim();
     }
 
-    complaint.updatedAt = new Date().toISOString();
-    complaints[index] = complaint;
-    await writeComplaints(complaints);
+    await complaint.save();
 
-    return res.json({ success: true, complaint });
+    return res.json({ success: true, complaint: complaint.toObject() });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Failed to update complaint.' });
   }
