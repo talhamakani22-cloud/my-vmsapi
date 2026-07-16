@@ -37,6 +37,12 @@ function App() {
 
   // Check session from backend only on mount
   useEffect(() => {
+    const requestedPublicScreen = getPublicScreenFromUrl();
+    if (requestedPublicScreen) {
+      setScreen(requestedPublicScreen);
+      return;
+    }
+
     const checkSession = async () => {
       const savedUser = localStorage.getItem('user');
       if (savedUser) {
