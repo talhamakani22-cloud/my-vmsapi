@@ -6,6 +6,9 @@ import AddPrice from './AddPrice';
 import ViewPriceList from './ViewPriceList';
 import NiewPriceRule from './NiewPriceRule';
 import UploadInvoice from './UploadInvoice';
+import ComplaintForm from './ComplaintForm';
+import ComplaintTrack from './ComplaintTrack';
+import QRCodeGenerator from './QRCodeGenerator';
 import { apiUrl } from './apiClient';
 
 function App() {
@@ -77,6 +80,9 @@ function App() {
         onNavigateToViewPriceList={() => setScreen('viewPriceList')}
         onNavigateToNiewPriceRule={() => setScreen('niewPriceRule')}
         onNavigateToUploadInvoice={() => setScreen('uploadInvoice')}
+        onNavigateToComplaintForm={() => setScreen('complaintForm')}
+        onNavigateToComplaintTrack={() => setScreen('complaintTrack')}
+        onNavigateToQRCode={() => setScreen('qrCode')}
         onLogout={handleLogout}
       />
     );
@@ -100,6 +106,18 @@ function App() {
 
   if (screen === 'uploadInvoice') {
     return <UploadInvoice onBackToDashboard={() => setScreen('dashboard')} />;
+  }
+
+  if (screen === 'complaintForm') {
+    return <ComplaintForm />;
+  }
+
+  if (screen === 'complaintTrack') {
+    return <ComplaintTrack />;
+  }
+
+  if (screen === 'qrCode') {
+    return <QRCodeGenerator />;
   }
 
   return <Login onSignInSuccess={(userData) => {

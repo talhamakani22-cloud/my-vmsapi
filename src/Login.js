@@ -76,11 +76,11 @@ function Login({ onSignInSuccess }) {
       <div className="login-card">
         <div className="login-header">
           <div className="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" opacity="0.9" />
-              <path d="M2 17l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <path d="M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-            </svg>
+            <img
+              src={require('./assets/images/secure-pass.jpeg')}
+              alt="Secure Pass logo"
+              className="logo-image"
+            />
           </div>
           <h1 className="login-title">Welcome back</h1>
           <p className="login-subtitle">Sign in to your account to continue</p>
