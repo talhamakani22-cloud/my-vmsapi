@@ -165,7 +165,7 @@ function ComplaintForm({ onBackToDashboard }) {
               <input name="phone" value={form.phone} onChange={handleChange} className="date-input complaint-input" />
             </div>
             <div className="date-picker-group">
-              <label>Location</label>
+              <label>Location / Flat No</label>
               <input name="location" value={form.location} onChange={handleChange} className="date-input complaint-input" />
             </div>
             <div className="date-picker-group complaint-upload-group">
@@ -226,9 +226,24 @@ function ComplaintForm({ onBackToDashboard }) {
               <div><strong>Status:</strong> {trackedComplaint.status || 'Pending'}</div>
               <div><strong>Name:</strong> {trackedComplaint.name || '-'}</div>
               <div><strong>Email:</strong> {trackedComplaint.email || '-'}</div>
-              <div><strong>Location:</strong> {trackedComplaint.location || '-'}</div>
+              <div><strong>Phone:</strong> {trackedComplaint.phone || '-'}</div>
+              <div><strong>Location / Flat No:</strong> {[trackedComplaint.location, trackedComplaint.flatNo].filter(Boolean).join(' / ') || '-'}</div>
+              <div><strong>Type:</strong> {trackedComplaint.type || 'General'}</div>
               <div><strong>Submitted:</strong> {trackedComplaint.createdAt ? new Date(trackedComplaint.createdAt).toLocaleString() : '-'}</div>
+              <div><strong>Follow-up Note:</strong> {trackedComplaint.followUpNote || 'Complaint registered'}</div>
+              <div><strong>Remarks:</strong> {trackedComplaint.assignedTo || '-'}</div>
               <div className="complaint-track-details"><strong>Details:</strong> {trackedComplaint.details || '-'}</div>
+              {trackedComplaint.imagePath && (
+                <div style={{ marginTop: 8 }}>
+                  <strong>Uploaded Picture:</strong>
+                  <br />
+                  <img
+                    src={apiUrl(trackedComplaint.imagePath)}
+                    alt="Complaint attachment"
+                    style={{ marginTop: 6, maxWidth: '100%', borderRadius: 6 }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </form>

@@ -199,6 +199,8 @@ function ComplaintTrack({ onBackToDashboard }) {
                     <p className="complaint-track-meta">
                       <strong>Location:</strong> {record.location || 'Reception'}
                       {'  '}|{'  '}
+                      <strong>Flat No:</strong> {record.flatNo || '-'}
+                      {'  '}|{'  '}
                       <strong>Type:</strong> {record.type || 'General'}
                       {'  '}|{'  '}
                       <strong>By:</strong> {record.name || 'Anonymous'}
@@ -212,7 +214,7 @@ function ComplaintTrack({ onBackToDashboard }) {
 
                     <p className="complaint-track-progress-text">Progress: {statusMeta.progress}%</p>
                     <p className="complaint-track-note"><strong>Follow-up Note:</strong> {record.followUpNote || 'Complaint registered'}</p>
-                    <p className="complaint-track-note"><strong>Assigned To:</strong> {record.assignedTo || '-'}</p>
+                    <p className="complaint-track-note"><strong>Remarks:</strong> {record.assignedTo || '-'}</p>
 
                     <button
                       type="button"
@@ -260,7 +262,7 @@ function ComplaintTrack({ onBackToDashboard }) {
                           </div>
 
                           <div className="complaint-track-edit-field">
-                            <label>Assigned To</label>
+                            <label>Remarks</label>
                             <input
                               className="date-input complaint-inline-input"
                               value={getDraftValue(record, 'assignedTo', '')}
