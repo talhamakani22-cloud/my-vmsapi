@@ -9,7 +9,8 @@ async function seed() {
     'demo@example.com',
     'alice@example.com',
     'bob@example.com',
-    'talha@example.com'
+    'talha@example.com',
+    'harman_demo@fastymtech.ae'
   ] } });
 
   // Create fresh demo users
@@ -36,6 +37,12 @@ async function seed() {
       name: 'Talha Makani',
       email: 'talha@example.com',
       password: 'talhapass',
+      role: 'user'
+    },
+    {
+      name: 'Harman',
+      email: 'harman_demo@fastymtech.ae',
+      password: 'harmandemo@123',
       role: 'user'
     }
   ];

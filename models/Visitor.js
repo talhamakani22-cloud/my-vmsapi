@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const visitorSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    default: null,
+    index: true,
+  },
   visitorId: {
     type: String,
     unique: true

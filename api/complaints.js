@@ -3,6 +3,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const multer = require('multer');
 const Complaint = require('../models/Complaint');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -47,9 +48,9 @@ async function buildTicketNumber() {
   return `CMP-${datePart}-${sequence}`;
 }
 
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try {
-    const complaints = await Complaint.find({}).sort({ createdAt: -1 }).lean();
+    const complaints = await Complaint.find({ userId: req.userId }).sort({ createdAt: -1 }).lean();
     return res.json({ success: true, complaints });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Failed to load complaints.' });
@@ -107,10 +108,10 @@ router.post('/', upload.single('file'), async (req, res) => {
   }
 });
 
-router.patch('/:ticket', async (req, res) => {
+router.patch('/:ticket', authMiddleware, async (req, res) => {
   try {
     const ticketParam = String(req.params.ticket || '').trim().toUpperCase();
-    const complaint = await Complaint.findOne({ ticket: ticketParam });
+    const complaint = await Complaint.findOne({ ticket: ticketParam, userId: req.userId });
     if (!complaint) {
       return res.status(404).json({ success: false, message: 'Complaint not found.' });
     }

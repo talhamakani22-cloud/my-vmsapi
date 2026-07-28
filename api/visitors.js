@@ -1,14 +1,14 @@
 
 const Visitor = require('../models/Visitor');
-
+const authMiddleware = require('../middleware/authMiddleware');
 const express = require('express');
 const router = express.Router();
 
-// GET /api/1001 - Get all visitors
-router.get('/', async (req, res) => {
+// GET /api/visitors - Get all visitors for logged-in user
+router.get('/', authMiddleware, async (req, res) => {
   try {
     const { search = '', startDate, endDate } = req.query;
-    const query = {};
+    const query = { userId: req.userId }; // Filter by userId
 
     if (search) {
       query.$or = [
@@ -39,8 +39,8 @@ router.get('/', async (req, res) => {
 // UAE Emirates ID format: 784-XXXX-XXXXXXX-X
 const emiratesIdPattern = /^784-[0-9]{4}-[0-9]{7}-[0-9]{1}$/;
 
-// POST /api/visitors - Add a new visitor
-router.post('/', async (req, res) => {
+// POST /api/visitors - Add a new visitor for logged-in user
+router.post('/', authMiddleware, async (req, res) => {
   const {
     emiratesId,
     fullNameEnglish,
@@ -66,6 +66,7 @@ router.post('/', async (req, res) => {
 
   try {
     const visitor = new Visitor({
+      userId: req.userId,
       emiratesId,
       fullNameEnglish,
       fullNameArabic,
@@ -79,6 +80,7 @@ router.post('/', async (req, res) => {
     });
     await visitor.save();
     console.log('[Visitor Added]', {
+      userId: visitor.userId,
       id: visitor._id,
       emiratesId: visitor.emiratesId,
       fullNameEnglish: visitor.fullNameEnglish,
