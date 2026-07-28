@@ -21,7 +21,9 @@ function Dashboard({
       }
       setError('');
       try {
-        const res = await fetch(apiUrl('/api/visitors'));
+        const res = await fetch(apiUrl('/api/visitors'), {
+          credentials: 'include',
+        });
         const data = await res.json();
         if (data.success) {
           if (isMounted) {

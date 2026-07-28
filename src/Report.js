@@ -28,7 +28,9 @@ function Report({ onBackToDashboard, onRequireLogin }) {
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
       const query = params.toString();
-      const res = await fetch(apiUrl(`/api/visitors${query ? `?${query}` : ''}`));
+      const res = await fetch(apiUrl(`/api/visitors${query ? `?${query}` : ''}`), {
+        credentials: 'include',
+      });
       const data = await res.json();
       if (data.success) {
         setVisitors(data.visitors);

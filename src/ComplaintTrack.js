@@ -37,7 +37,9 @@ function ComplaintTrack({ onBackToDashboard }) {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(apiUrl('/api/complaints'));
+      const response = await fetch(apiUrl('/api/complaints'), {
+        credentials: 'include',
+      });
       const data = await response.json();
       if (data.success) {
         setComplaints(data.complaints || []);
@@ -90,6 +92,7 @@ function ComplaintTrack({ onBackToDashboard }) {
       const response = await fetch(apiUrl(`/api/complaints/${encodeURIComponent(ticket)}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       const data = await response.json();

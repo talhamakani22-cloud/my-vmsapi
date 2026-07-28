@@ -108,7 +108,9 @@ function ComplaintForm({ onBackToDashboard }) {
     setTrackedComplaint(null);
 
     try {
-      const response = await fetch(apiUrl('/api/complaints'));
+      const response = await fetch(apiUrl('/api/complaints'), {
+        credentials: 'include',
+      });
       const data = await response.json();
 
       if (!data.success) {
