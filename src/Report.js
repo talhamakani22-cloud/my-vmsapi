@@ -232,6 +232,9 @@ function Report({ onBackToDashboard, onRequireLogin }) {
                 <th>Gender</th>
                 <th>Expiry Date</th>
                 <th>Issue Date</th>
+                <th>Occupation</th>
+                <th>Employer</th>
+                <th>Visit Date</th>
                 <th>Purpose of Visit</th>
                 <th>Remarks</th>
               </tr>
@@ -252,13 +255,16 @@ function Report({ onBackToDashboard, onRequireLogin }) {
                     </td>
                     <td>{visitor.expiryDate}</td>
                     <td>{visitor.issueDate}</td>
+                    <td>{visitor.occupation || '-'}</td>
+                    <td>{visitor.employer || '-'}</td>
+                    <td>{visitor.visitDate || '-'}</td>
                     <td>{visitor.purposeOfVisit || '-'}</td>
                     <td>{visitor.remark || visitor.remarks || '-'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="10" className="no-results">
+                  <td colSpan="13" className="no-results">
                     No monthly records found matching your criteria
                   </td>
                 </tr>

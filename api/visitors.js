@@ -51,6 +51,9 @@ router.post('/', authMiddleware, async (req, res) => {
     issueDate,
     expiryDate,
     purposeOfVisit,
+    visitDate,
+    occupation,
+    employer,
     remark
   } = req.body;
 
@@ -60,7 +63,7 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 
   // Required fields validation
-  if (!emiratesId || !fullNameEnglish || !fullNameArabic || !nationality || !dateOfBirth || !gender || !issueDate || !expiryDate || !purposeOfVisit || !remark) {
+  if (!emiratesId || !fullNameEnglish || !fullNameArabic || !nationality || !dateOfBirth || !gender || !issueDate || !expiryDate || !purposeOfVisit || !visitDate || !remark) {
     return res.status(400).json({ success: false, message: 'All fields are required.' });
   }
 
@@ -76,6 +79,9 @@ router.post('/', authMiddleware, async (req, res) => {
       issueDate,
       expiryDate,
       purposeOfVisit,
+      visitDate,
+      occupation,
+      employer,
       remark
     });
     await visitor.save();
@@ -88,6 +94,7 @@ router.post('/', authMiddleware, async (req, res) => {
       dateOfBirth: visitor.dateOfBirth,
       gender: visitor.gender,
       purposeOfVisit: visitor.purposeOfVisit,
+      visitDate: visitor.visitDate,
       remark: visitor.remark
     });
     res.status(201).json(visitor);

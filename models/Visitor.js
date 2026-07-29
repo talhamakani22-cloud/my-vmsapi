@@ -63,6 +63,21 @@ const visitorSchema = new mongoose.Schema({
     required: [true, 'Purpose of visit is required'],
     trim: true
   },
+  visitDate: {
+    type: String,
+    required: [true, 'Visit date is required'],
+    default: () => new Date().toISOString().split('T')[0]
+  },
+  occupation: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  employer: {
+    type: String,
+    default: '',
+    trim: true
+  },
   remark: {
     type: String,
     required: [true, 'Remark is required'],
