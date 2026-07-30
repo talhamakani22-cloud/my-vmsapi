@@ -25,6 +25,16 @@ const visitorSchema = new mongoose.Schema({
     default: '',
     trim: true
   },
+  email: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  phone: {
+    type: String,
+    default: '',
+    trim: true
+  },
   nationality: {
     type: String,
     required: [true, 'Nationality is required']

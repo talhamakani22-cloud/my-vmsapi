@@ -15,6 +15,8 @@ router.get('/', authMiddleware, async (req, res) => {
         { emiratesId: { $regex: search, $options: 'i' } },
         { fullNameEnglish: { $regex: search, $options: 'i' } },
         { fullNameArabic: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
         { nationality: { $regex: search, $options: 'i' } },
         { gender: { $regex: search, $options: 'i' } },
         { purposeOfVisit: { $regex: search, $options: 'i' } },
@@ -45,6 +47,8 @@ router.post('/', authMiddleware, async (req, res) => {
     emiratesId,
     fullNameEnglish,
     fullNameArabic,
+    email,
+    phone,
     nationality,
     dateOfBirth,
     gender,
@@ -63,7 +67,7 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 
   // Required fields validation
-  if (!emiratesId || !fullNameEnglish || !fullNameArabic || !nationality || !dateOfBirth || !gender || !issueDate || !expiryDate || !purposeOfVisit || !visitDate || !remark) {
+  if (!emiratesId || !fullNameEnglish || !nationality || !dateOfBirth || !gender || !issueDate || !expiryDate || !purposeOfVisit || !visitDate || !remark) {
     return res.status(400).json({ success: false, message: 'All fields are required.' });
   }
 
@@ -72,7 +76,9 @@ router.post('/', authMiddleware, async (req, res) => {
       userId: req.userId,
       emiratesId,
       fullNameEnglish,
-      fullNameArabic,
+      fullNameArabic: fullNameArabic || '',
+      email: email || '',
+      phone: phone || '',
       nationality,
       dateOfBirth,
       gender,

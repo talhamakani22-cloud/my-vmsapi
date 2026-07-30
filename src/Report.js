@@ -226,7 +226,8 @@ function Report({ onBackToDashboard, onRequireLogin }) {
               <tr>
                 <th>Emirates ID Number</th>
                 <th>Full Name (English)</th>
-                <th>Full Name (Arabic)</th>
+                <th>Email</th>
+                <th>Phone Number</th>
                 <th>Nationality</th>
                 <th>Date of Birth</th>
                 <th>Gender</th>
@@ -245,7 +246,8 @@ function Report({ onBackToDashboard, onRequireLogin }) {
                   <tr key={index}>
                     <td className="emirates-id-cell">{visitor.emiratesId}</td>
                     <td className="name-en-cell">{visitor.fullNameEnglish}</td>
-                    <td className="name-ar-cell" dir="rtl">{visitor.fullNameArabic}</td>
+                    <td>{visitor.email || '-'}</td>
+                    <td>{visitor.phone || '-'}</td>
                     <td>
                       <span className="nationality-badge">{visitor.nationality}</span>
                     </td>
@@ -264,7 +266,7 @@ function Report({ onBackToDashboard, onRequireLogin }) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="13" className="no-results">
+                  <td colSpan="14" className="no-results">
                     No monthly records found matching your criteria
                   </td>
                 </tr>
