@@ -225,7 +225,7 @@ function Report({ onBackToDashboard, onRequireLogin }) {
             <thead>
               <tr>
                 <th>Emirates ID Number</th>
-                <th>Full Name (English)</th>
+                <th>Full Name</th>
                 <th>Email</th>
                 <th>Phone Number</th>
                 <th>Nationality</th>
@@ -245,9 +245,9 @@ function Report({ onBackToDashboard, onRequireLogin }) {
                 displayedVisitors.map((visitor, index) => (
                   <tr key={index}>
                     <td className="emirates-id-cell">{visitor.emiratesId}</td>
-                    <td className="name-en-cell">{visitor.fullNameEnglish}</td>
-                    <td>{visitor.email || '-'}</td>
-                    <td>{visitor.phone || '-'}</td>
+                    <td className="name-en-cell">{visitor.fullNameEnglish || visitor.fullName || '-'}</td>
+                    <td>{visitor.email || visitor.Email || '-'}</td>
+                    <td>{visitor.phone || visitor.PhoneNumber || visitor.Phone || '-'}</td>
                     <td>
                       <span className="nationality-badge">{visitor.nationality}</span>
                     </td>

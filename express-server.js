@@ -48,11 +48,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-session-secret-change-me',
   resave: false,
   saveUninitialized: false,
+  rolling: true,
   cookie: {
     secure: isProduction,
     httpOnly: true,
     sameSite: isProduction ? 'none' : 'lax',
-    maxAge: 1 * 60 * 60 * 1000, // 1 hour session timeout
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days session timeout
   }
 }));
 
